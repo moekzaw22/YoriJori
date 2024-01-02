@@ -1,0 +1,36 @@
+ .navbar-1 {
+  background-color: #333; /* Background color */
+  overflow: hidden;
+  padding:10px;
+
+}
+body{
+   margin:0;
+   font-family: arial;
+}
+.link {
+ color:white;
+ text-decoration: none;
+  padding:10px;
+}
+
+.link:hover,
+.link:active,
+.link:focus {
+    background-color: #ccc; /* Change this to the desired background color */
+    color: #fff; /* Change this to the desired text color */
+}
+.navbar-1 .link:hover {
+  background-color: #555; /* Background color on hover */
+  text-decoration: none;
+    color:black;
+}
+.link.active:hover{
+    background-color: #f44336;
+    text-decoration: none;
+    color:black;
+}
+.link.active {
+  background-color: #f44336;
+   /* Background color for the active link */
+}
