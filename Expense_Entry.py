@@ -1,8 +1,10 @@
 import tkinter as tk
 from tkcalendar import DateEntry
+from tkinter import messagebox
 import pymysql
+from datetime import datetime
 
-class StudentEntryView(tk.Frame):
+class Expense_Entry(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.pack()
@@ -49,6 +51,12 @@ class StudentEntryView(tk.Frame):
         selected_date = self.Entry_Date.get()
         self.result_label.config(text=f"Selected Date: {selected_date}")
 
+    def show_success_alert(self):
+        messagebox.showinfo("Success", "Expense added successfully!")
+
+    def show_failure_alert(self, error_message):
+        messagebox.showerror("Error", f"Failed to add expense. Error: {error_message}")
+
     def add_expense(self):
         connection = pymysql.connect(
             host='localhost',
@@ -62,20 +70,28 @@ class StudentEntryView(tk.Frame):
             # Create a cursor object to interact with the database
             with connection.cursor() as cursor:
                 # Sample query to insert expense data
-                date = self.Entry_Date.get()
+                input_date_str = self.Entry_Date.get()
+
+                # Parse the input date string into a datetime object
+                date = datetime.strptime(input_date_str, '%m/%d/%y')
+
                 category = self.Entry_Category.get()
                 item = self.Entry_Item.get()
                 quantity = self.Entry_Quantity.get()
                 amount = self.Entry_Amount.get()
 
-                sql_query = f"INSERT INTO expense (Expense_ID, date, category, Description, quantity, amount) " \
-                            f"VALUES ('', '{date}', '{category}', '{item}', '{quantity}', '{amount}')"
-
+                sql_query = f"INSERT INTO expense (Expense_ID,date, category, Description, quantity, amount) " \
+                            f"VALUES ('','{date}', '{category}', '{item}', '{quantity}', '{amount}')"
                 # Execute the SQL query
                 cursor.execute(sql_query)
 
             # Commit the changes to the database
             connection.commit()
+            self.show_success_alert()
+
+        except Exception as e:
+            # Show failure alert with the error message
+            self.show_failure_alert(str(e))
 
         finally:
             # Close the connection, whether the query is successful or an exception is raised
@@ -84,10 +100,9 @@ class StudentEntryView(tk.Frame):
 # Create the main window
 root = tk.Tk()
 root.title("Expense Entry")
-root.state('zoomed')
 
-# Instantiate the StudentEntryView
-student_entry_view = StudentEntryView(root)
+# Instantiate the Expense_Entry
+expense_entry = Expense_Entry(root)
 
 # Start the Tkinter event loop
 root.mainloop()
